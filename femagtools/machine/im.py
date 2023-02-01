@@ -479,6 +479,8 @@ class InductionMachine(Component):
 
         r = dict(u1=[], i1=[], T=[], cosphi=[], n=[], s=[], sk=[],
                  plfe1=[], plcu1=[], plcu2=[])
+        r['n_type'] = wmType/2/np.pi  # Eckdrehzahl
+        r['n_po'] = wmPullout/2/np.pi  # Kippdrehzahl
         T = [tload2(wx) for wx in wmtab]
         tfric = self.kfric_b*self.rotor_mass*30e-3/np.pi
         w1tab = []
