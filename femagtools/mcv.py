@@ -557,7 +557,7 @@ class Writer(Mcv):
             self.writeBlock([1])
             logger.info('Losses n freq %d n ind %d', nfreq, nind)
         except Exception as e:
-            logger.error(e, exc_info=True)
+            logger.error("Exception %s", e, exc_info=True)
 
     def writeMcv(self, filename, fillfac=None, recsin=''):
         # windows needs this strip to remove '\r'
@@ -821,7 +821,8 @@ class Reader(Mcv):
                 self.losses['b_coeff'] = beta
                 self.losses['ch'] = self.ch
                 self.losses['ch_freq'] = self.ch_freq
-        except:
+        except Exception as e:
+            logger.debug("Exception %s", e)
             if self.losses and 'B' in self.losses:
                 if not self.losses['f'] or not self.losses['pfe']:
                     self.losses = {}
@@ -884,12 +885,12 @@ class MagnetizingCurve(object):
             try:
                 self.mcv[str(mcvpar['id'])] = mcvpar
                 return
-            except Exception:
+            except KeyError:
                 pass
             try:
                 self.mcv[mcvpar['name']] = mcvpar
                 return
-            except Exception:
+            except KeyError:
                 pass
 
             self.mcv['0'] = mcvpar
@@ -920,9 +921,10 @@ class MagnetizingCurve(object):
                 if os.access(os.path.join(self.mcdirectory,
                                           filename), os.R_OK):
                     return id
-            except Exception as ex:
-                logger.warn(ex)
-                pass
+            except AttributeError as ex:
+                #logger.warn("Exception %s", ex)
+                pass  # no mcdirectory
+
         logger.debug("search by name %s", id)
         m = self.find_by_name(id)
         return m['name'] if m else None
